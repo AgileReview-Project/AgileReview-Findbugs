@@ -1,29 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution
-            allPopups="false"
-            locationURI="menu:org.eclipse.ui.main.menu">
-         <menu
-               label="AgileReview Demo">
-            <command
-                  commandId="org.agilereview.demo.findbugs.start"
-                  label="Run Findbugs"
-                  style="push"
-                  tooltip="Start integrated Findbugs">
-            </command>
-         </menu>
-      </menuContribution>
-   </extension>
-   <extension
+    <extension
          point="org.eclipse.ui.commands">
       <command
-            id="org.agilereview.demo.findbugs.start"
-            name="name"
-            defaultHandler="org.agilereview.demo.findbugs.FindbugsHandler">
+            categoryId="org.agilereview.demo.findbugs.commands"
+            defaultHandler="org.agilereview.demo.findbugs.FindbugsImportHandler"
+            id="org.agilereview.demo.findbugs.import"
+            name="AgileReview Findbugs Import">
       </command>
+      <category
+            description="Commands of AgileReview Findbugs Plugin"
+            id="org.agilereview.demo.findbugs.commands"
+            name="org.agilereview.demo.findbugs.commands">
+      </category>
    </extension>
+    <extension
+          point="org.eclipse.ui.menus">
+      <menuContribution
+         allPopups="false"
+         locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
+      <menu
+            id="org.agilereview.packageexplorer.menu"
+            label="AgileReview">
+          <command
+                commandId="org.agilereview.demo.findbugs.import"
+                id="org.agilereview.demo.findbugs.import"
+                label="Import Findbugs Results"
+                style="push"
+                tooltip="Import Findbugs Results into AgileReview">
+          </command>
+      </menu>
+   </menuContribution>
+    </extension>
+   
 
 </plugin>

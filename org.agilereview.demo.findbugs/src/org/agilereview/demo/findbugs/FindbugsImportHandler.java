@@ -1,5 +1,8 @@
 package org.agilereview.demo.findbugs;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.agilereview.core.external.storage.CommentingAPI;
 import org.agilereview.core.external.storage.Review;
 import org.eclipse.core.commands.AbstractHandler;
@@ -27,7 +30,11 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.SortedBugCollection;
 import edu.umd.cs.findbugs.SourceLineAnnotation;
 
-public class FindbugsHandler extends AbstractHandler implements IHandler {
+/**
+ * 
+ * @author Peter Reuter (17.05.2014)
+ */
+public class FindbugsImportHandler extends AbstractHandler implements IHandler {
     
     /** The Logger for this plugin */
     private final ILog log = Activator.getDefault().getLog();
@@ -37,7 +44,7 @@ public class FindbugsHandler extends AbstractHandler implements IHandler {
         
         final ISelection selection = HandlerUtil.getCurrentSelection(event);
         
-        Job findbugsJob = new Job("AgileReview Findbugs") {
+        Job findbugsJob = new Job("Importing FindBugs result into AgileReview") {
             
             @Override
             protected IStatus run(IProgressMonitor monitor) {
@@ -53,29 +60,36 @@ public class FindbugsHandler extends AbstractHandler implements IHandler {
                 if (project != null) {
                     try {
                         SortedBugCollection bugs = FindbugsPlugin.getBugCollection(project, monitor);
+                        
                         Review r = CommentingAPI.createReview();
+                        r.setName("Findbugs Import " + new SimpleDateFormat("YYYY-MM-dd HH:mm").format(new Date()));
                         r.setDescription("FindBugs found " + bugs.getCollection().size() + " bugs in project '" + bugs.getProject().getProjectName()
                                 + "'.");
+                        
                         for (BugInstance bug : bugs) {
-                            System.out.println("\t" + bug.getMessageWithoutPrefix());
+                            String commentText = bug.getMessageWithoutPrefix();
                             for (BugAnnotation annotation : bug.getAnnotationsForMessage(true)) {
                                 if (annotation instanceof SourceLineAnnotation) {
                                     String fileName = ((SourceLineAnnotation) annotation).getSourceFile();
-                                    Path path = new Path(fileName);
+                                    String packageName = ((SourceLineAnnotation) annotation).getPackageName();
+                                    
+                                    Path path = new Path("/" + project.getName() + "/src/" + packageName.replace(".", "/") + "/" + fileName);
                                     IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
                                     
                                     // XXX this does not work atm
                                     // Comment c = CommentingAPI.createComment("findbugs", r.getId());
                                     // c.setCommentedFile(file);
+                                    // c.setText(commentText);
                                 }
                             }
                         }
                     } catch (CoreException e) {
-                        FindbugsHandler.this.log.log(new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                        FindbugsImportHandler.this.log.log(new Status(IStatus.ERROR, Activator.PLUGIN_ID,
                                 "CoreException occured while collecting bug information into AgileReview.\n" + e.getStackTrace()));
+                        return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error while importing FindBugs result into AgileReview!");
                     }
                 }
-                return new Status(IStatus.OK, Activator.PLUGIN_ID, "Done");
+                return new Status(IStatus.OK, Activator.PLUGIN_ID, "Successfully imported FindBugs result into AgileReview.");
             }
         };
         
