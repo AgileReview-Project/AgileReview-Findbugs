@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               label="AgileReview Demo">
+            <command
+                  commandId="org.agilereview.demo.findbugs.start"
+                  label="Run Findbugs"
+                  style="push"
+                  tooltip="Start integrated Findbugs">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.agilereview.demo.findbugs.start"
+            name="name"
+            defaultHandler="org.agilereview.demo.findbugs.FindbugsHandler">
+      </command>
+   </extension>
+
+</plugin>
