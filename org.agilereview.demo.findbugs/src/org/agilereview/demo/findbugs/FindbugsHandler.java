@@ -1,56 +1,61 @@
 package org.agilereview.demo.findbugs;
 
-import java.io.IOException;
-
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.handlers.HandlerUtil;
 
-import edu.umd.cs.findbugs.BugRanker;
-import edu.umd.cs.findbugs.Detector;
-import edu.umd.cs.findbugs.DetectorFactoryCollection;
-import edu.umd.cs.findbugs.FindBugs2;
-import edu.umd.cs.findbugs.Project;
+import de.tobject.findbugs.FindbugsPlugin;
+import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.SortedBugCollection;
-import edu.umd.cs.findbugs.XMLBugReporter;
 
 public class FindbugsHandler extends AbstractHandler implements IHandler {
     
     @Override
-    public Object execute(ExecutionEvent event) throws ExecutionException {
-        try {
-            FindBugs2 findBugs = new FindBugs2();
+    public Object execute(final ExecutionEvent event) throws ExecutionException {
+        
+        final ISelection selection = HandlerUtil.getCurrentSelection(event);
+        
+        Job findbugsJob = new Job("AgileReview Findbugs Job") {
             
-            findBugs.setDetectorFactoryCollection(DetectorFactoryCollection.instance());
-            
-            SortedBugCollection bugs = new SortedBugCollection();
-            
-            Project project = bugs.getProject().duplicate();
-            
-            XMLBugReporter xmlBugReporter = new XMLBugReporter(project);
-            xmlBugReporter.setAddMessages(true);
-            xmlBugReporter.setMinimalXML(false);
-            
-            xmlBugReporter.setOutputStream(System.out);
-            
-            xmlBugReporter.setRankThreshold(BugRanker.VISIBLE_RANK_MAX);
-            xmlBugReporter.setPriorityThreshold(Detector.NORMAL_PRIORITY);
-            
-            findBugs.setBugReporter(xmlBugReporter);
-            findBugs.setProject(project);
-            
-            findBugs.finishSettings();
-            
-            findBugs.execute();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                IProject project = null;
+                
+                if (selection instanceof IStructuredSelection) {
+                    Object firstElement = ((IStructuredSelection) selection).getFirstElement();
+                    if (firstElement instanceof IAdaptable) {
+                        project = (IProject) ((IAdaptable) firstElement).getAdapter(IProject.class);
+                    }
+                }
+                
+                if (project != null) {
+                    try {
+                        SortedBugCollection bugs = FindbugsPlugin.getBugCollection(project, monitor);
+                        for (BugInstance bug : bugs) {
+                            System.out.println(bug);
+                        }
+                    } catch (CoreException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+                return new Status(IStatus.OK, Activator.PLUGIN_ID, "Done");
+            }
+        };
+        
+        findbugsJob.schedule();
+        
         return null;
     }
-    
 }
