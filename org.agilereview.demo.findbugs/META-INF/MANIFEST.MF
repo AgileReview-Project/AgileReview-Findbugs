@@ -7,7 +7,8 @@ Bundle-Activator: org.agilereview.demo.findbugs.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.agilereview.core;bundle-version="1.0.0",
- edu.umd.cs.findbugs.plugin.eclipse;bundle-version="2.0.3"
+ edu.umd.cs.findbugs.plugin.eclipse;bundle-version="2.0.3",
+ org.agilereview.common;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,

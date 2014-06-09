@@ -1,8 +1,12 @@
 package org.agilereview.demo.findbugs;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.agilereview.common.exception.ExceptionHandler;
+import org.agilereview.core.external.exception.NullArgumentException;
+import org.agilereview.core.external.storage.Comment;
 import org.agilereview.core.external.storage.CommentingAPI;
 import org.agilereview.core.external.storage.Review;
 import org.eclipse.core.commands.AbstractHandler;
@@ -50,15 +54,22 @@ public class FindbugsImportHandler extends AbstractHandler implements IHandler {
             protected IStatus run(IProgressMonitor monitor) {
                 IProject project = null;
                 
+                String errorMessage = null;
+                
                 if (selection instanceof IStructuredSelection) {
                     Object firstElement = ((IStructuredSelection) selection).getFirstElement();
                     if (firstElement instanceof IAdaptable) {
                         project = (IProject) ((IAdaptable) firstElement).getAdapter(IProject.class);
+                    } else {
+                        errorMessage = "No suitable selection. Please select a Project.";
                     }
+                } else {
+                    errorMessage = "No suitable selection. Please select a Project.";
                 }
                 
                 if (project != null) {
                     try {
+                        
                         SortedBugCollection bugs = FindbugsPlugin.getBugCollection(project, monitor);
                         
                         Review r = CommentingAPI.createReview();
@@ -76,20 +87,30 @@ public class FindbugsImportHandler extends AbstractHandler implements IHandler {
                                     Path path = new Path("/" + project.getName() + "/src/" + packageName.replace(".", "/") + "/" + fileName);
                                     IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
                                     
-                                    // XXX this does not work atm
-                                    // Comment c = CommentingAPI.createComment("findbugs", r.getId());
-                                    // c.setCommentedFile(file);
-                                    // c.setText(commentText);
+                                    try {
+                                        Comment c = CommentingAPI.createComment(file, ((SourceLineAnnotation) annotation).getStartLine(),
+                                                ((SourceLineAnnotation) annotation).getEndLine(), "findbugs", r.getId());
+                                        c.setText(commentText);
+                                    } catch (IOException | NullArgumentException e) {
+                                        FindbugsImportHandler.this.log.log(new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                                                "Error while importing a findbugs finding:\n" + ExceptionHandler.getStackTrace(e)));
+                                        errorMessage = "Some errors were encountered while importing fingbugs findings. Pleaes check the logfile for further information.";
+                                    }
                                 }
                             }
                         }
                     } catch (CoreException e) {
                         FindbugsImportHandler.this.log.log(new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-                                "CoreException occured while collecting bug information into AgileReview.\n" + e.getStackTrace()));
-                        return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error while importing FindBugs result into AgileReview!");
+                                "CoreException occured while collecting bug information into AgileReview.\n" + ExceptionHandler.getStackTrace(e)));
+                        errorMessage = "Error while importing FindBugs result into AgileReview!";
                     }
                 }
-                return new Status(IStatus.OK, Activator.PLUGIN_ID, "Successfully imported FindBugs result into AgileReview.");
+                
+                if (errorMessage != null) {
+                    return new Status(IStatus.ERROR, Activator.PLUGIN_ID, errorMessage);
+                } else {
+                    return new Status(IStatus.OK, Activator.PLUGIN_ID, "Successfully imported FindBugs result into AgileReview.");
+                }
             }
         };
         
