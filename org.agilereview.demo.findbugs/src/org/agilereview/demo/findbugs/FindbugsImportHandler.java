@@ -6,6 +6,7 @@ import java.util.Date;
 
 import org.agilereview.common.exception.ExceptionHandler;
 import org.agilereview.core.external.exception.NullArgumentException;
+import org.agilereview.core.external.preferences.AgileReviewPreferences;
 import org.agilereview.core.external.storage.Comment;
 import org.agilereview.core.external.storage.CommentingAPI;
 import org.agilereview.core.external.storage.Review;
@@ -24,6 +25,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -76,6 +78,8 @@ public class FindbugsImportHandler extends AbstractHandler implements IHandler {
                         r.setName("Findbugs Import " + new SimpleDateFormat("YYYY-MM-dd HH:mm").format(new Date()));
                         r.setDescription("FindBugs found " + bugs.getCollection().size() + " bugs in project '" + bugs.getProject().getProjectName()
                                 + "'.");
+                        r.setResponsibility(InstanceScope.INSTANCE.getNode("org.agilereview.core").get(AgileReviewPreferences.AUTHOR,
+                                System.getProperty("user.name")));
                         
                         for (BugInstance bug : bugs) {
                             String commentText = bug.getMessageWithoutPrefix();
