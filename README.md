@@ -19,7 +19,9 @@ Current Status
 ==============
 * What?
   * Running import in general works (fetching bugs, affected files, lines)
-  * Creating a new review works
+  * Creating a new review per import works
+  * Transforming FindBugs findings into AgileReview comments works
 * What not?
   * Need to switch to AgileReview perspective once before starting import
-  * No comments created, public API missing atm
+* Untested
+  * Multi-line findings/comments
