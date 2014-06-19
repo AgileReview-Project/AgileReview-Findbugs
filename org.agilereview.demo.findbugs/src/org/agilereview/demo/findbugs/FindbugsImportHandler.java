@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.agilereview.common.exception.ExceptionHandler;
 import org.agilereview.core.external.exception.NullArgumentException;
 import org.agilereview.core.external.preferences.AgileReviewPreferences;
 import org.agilereview.core.external.storage.Comment;
@@ -19,16 +18,20 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.tobject.findbugs.FindbugsPlugin;
 import edu.umd.cs.findbugs.BugAnnotation;
@@ -43,7 +46,7 @@ import edu.umd.cs.findbugs.SourceLineAnnotation;
 public class FindbugsImportHandler extends AbstractHandler implements IHandler {
     
     /** The Logger for this plugin */
-    private final ILog log = Activator.getDefault().getLog();
+    private static final Logger LOG = LoggerFactory.getLogger(FindbugsImportHandler.class);
     
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
@@ -88,24 +91,34 @@ public class FindbugsImportHandler extends AbstractHandler implements IHandler {
                                     String fileName = ((SourceLineAnnotation) annotation).getSourceFile();
                                     String packageName = ((SourceLineAnnotation) annotation).getPackageName();
                                     
-                                    Path path = new Path("/" + project.getName() + "/src/" + packageName.replace(".", "/") + "/" + fileName);
-                                    IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
-                                    
-                                    try {
-                                        Comment c = CommentingAPI.createComment(file, ((SourceLineAnnotation) annotation).getStartLine(),
-                                                ((SourceLineAnnotation) annotation).getEndLine(), "findbugs", r.getId());
-                                        c.setText(commentText);
-                                    } catch (IOException | NullArgumentException e) {
-                                        FindbugsImportHandler.this.log.log(new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-                                                "Error while importing a findbugs finding:\n" + ExceptionHandler.getStackTrace(e)));
-                                        errorMessage = "Some errors were encountered while importing fingbugs findings. Pleaes check the logfile for further information.";
+                                    IJavaProject javaProject = JavaCore.create(project);
+                                    if (javaProject != null) {
+                                        IPackageFragmentRoot[] roots = javaProject.getPackageFragmentRoots();
+                                        for (IPackageFragmentRoot root : roots) {
+                                            Path path = new Path(root.getPath().toString() + "/" + packageName.replace(".", "/") + "/" + fileName);
+                                            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+                                            if (file.exists()) {
+                                                try {
+                                                    int startLine = ((SourceLineAnnotation) annotation).getStartLine();
+                                                    int endLine = ((SourceLineAnnotation) annotation).getEndLine();
+                                                    if (startLine > -1 && endLine > -1) { // TODO insert global comments? or what is the semantic of start=end=-1?
+                                                        Comment c = CommentingAPI.createComment(file, startLine, endLine, "findbugs", r.getId());
+                                                        c.setText(commentText);
+                                                    }
+                                                } catch (IOException | NullArgumentException e) {
+                                                    LOG.error("Error while importing a findbugs finding." + e);
+                                                    errorMessage = "Some errors were encountered while importing fingbugs findings. Pleaes check the logfile for further information.";
+                                                }
+                                                break;
+                                            }
+                                        }
                                     }
+                                    
                                 }
                             }
                         }
                     } catch (CoreException e) {
-                        FindbugsImportHandler.this.log.log(new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-                                "CoreException occured while collecting bug information into AgileReview.\n" + ExceptionHandler.getStackTrace(e)));
+                        LOG.error("CoreException occured while collecting bug information into AgileReview." + e);
                         errorMessage = "Error while importing FindBugs result into AgileReview!";
                     }
                 }
