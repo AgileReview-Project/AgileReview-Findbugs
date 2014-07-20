@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.agilereview.demo.findbugs.feature_0.0.0.qualifier.jar" id="org.agilereview.demo.findbugs.feature" version="0.0.0">
+      <category name="org.agilereview.demo.findbugs.updatesite"/>
+   </feature>
+   <category-def name="org.agilereview.demo.findbugs.updatesite" label="AgileReview Findbugs Demo UpdateSite"/>
+</site>
