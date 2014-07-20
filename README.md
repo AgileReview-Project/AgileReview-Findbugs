@@ -25,3 +25,8 @@ Current Status
   * Need to switch to AgileReview perspective once before starting import
 * Untested
   * Multi-line findings/comments
+
+Build status
+============
+[![Build Status](https://travis-ci.org/AgileReview-Project/AgileReview-Findbugs.svg?branch=master)](https://travis-ci.org/AgileReview-Project/AgileReview-Findbugs)
+  
