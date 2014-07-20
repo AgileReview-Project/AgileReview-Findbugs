@@ -316,5 +316,9 @@
                         <!-- but luckily, the jboss project has the repackaged p2 repository available: -->
                         <url>http://download.jboss.org/jbosstools/updates/requirements/findbugs/2.0.3.20131122-15027/</url>
                 </repository>
+                <repository>
+                        <id>org.agilereview.lib.snapshots</id>
+                        <url>http://www.agilereview.org/m2/snapshots/</url>
+                </repository>
         </repositories>
 </project>
