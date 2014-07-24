@@ -253,7 +253,7 @@
       <import plugin="org.agilereview.core" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="edu.umd.cs.findbugs.plugin.eclipse" version="2.0.3" match="greaterOrEqual"/>
       <import plugin="org.agilereview.common" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.core" version="3.9.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.core" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources"/>
    </requires>
 

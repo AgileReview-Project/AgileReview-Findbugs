@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.agilereview.demo.findbugs</groupId>
-  <artifactId>findbugs-updatesite</artifactId>
+  <artifactId>org.agilereview.demo.findbugs.updatesite</artifactId>
   <name>AgileReview Findbugs UpdateSite</name>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>eclipse-update-site</packaging>

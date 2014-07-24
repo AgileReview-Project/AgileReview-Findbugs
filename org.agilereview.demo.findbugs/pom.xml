@@ -4,7 +4,7 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.agilereview.demo.findbugs</groupId>
-	<artifactId>findbugs-plugin</artifactId>
+	<artifactId>org.agilereview.demo.findbugs</artifactId>
 	<name>AgileReview Findbugs Plugin</name>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
@@ -14,9 +14,15 @@
 		<artifactId>org.agilereview.demo.findbugs.parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
+
 	
 	<dependencies>
-		<dependency>
+                <dependency>
+    		        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                        <version>1.7.7</version>
+                </dependency>
+                <dependency>
 			<groupId>org.agilereview</groupId>
 			<artifactId>common</artifactId>
 			<version>1.0.0-SNAPSHOT</version>

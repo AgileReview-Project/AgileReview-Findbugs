@@ -30,15 +30,6 @@
             <developerConnection>scm:git:git@github.com:AgileReview-Project/AgileReview-Findbugs.git</developerConnection>
         </scm>
 
-        <dependencies>
-                <!-- Logger -->
-                <dependency>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                        <version>1.7.7</version>
-                </dependency>
-        </dependencies>
-
         <pluginRepositories>
                 <pluginRepository>
                         <id>tycho</id>
