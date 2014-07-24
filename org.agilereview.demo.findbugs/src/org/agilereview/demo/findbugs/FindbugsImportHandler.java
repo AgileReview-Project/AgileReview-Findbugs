@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.agilereview.common.ui.PlatformUITools;
 import org.agilereview.core.external.exception.NullArgumentException;
 import org.agilereview.core.external.preferences.AgileReviewPreferences;
 import org.agilereview.core.external.storage.Comment;
@@ -29,7 +30,6 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.handlers.HandlerUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +51,9 @@ public class FindbugsImportHandler extends AbstractHandler implements IHandler {
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
         
-        final ISelection selection = HandlerUtil.getCurrentSelection(event);
+        // ISelection sel = HandlerUtil.getCurrentSelection(event);
+        // Actually, the code above should be working. But as it sometimes gives the wrong selection in e4, use the line below
+        final ISelection selection = PlatformUITools.getActiveWorkbenchPage().getSelection();
         
         Job findbugsJob = new Job("Importing FindBugs result into AgileReview") {
             
