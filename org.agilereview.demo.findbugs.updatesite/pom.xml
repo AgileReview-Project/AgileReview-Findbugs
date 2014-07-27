@@ -6,7 +6,7 @@
   <artifactId>org.agilereview.demo.findbugs.updatesite</artifactId>
   <name>AgileReview Findbugs UpdateSite</name>
   <version>1.0.0-SNAPSHOT</version>
-  <packaging>eclipse-update-site</packaging>
+  <packaging>eclipse-repository</packaging>
   
   <parent>
     <artifactId>org.agilereview.demo.findbugs.parent</artifactId>

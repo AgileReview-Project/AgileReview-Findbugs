@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<site>
+<site pack200="true" digestURL="http://www.agilereview.org/p2/findbugs/updatesite">
    <feature url="features/org.agilereview.demo.findbugs.feature_0.0.0.qualifier.jar" id="org.agilereview.demo.findbugs.feature" version="0.0.0">
       <category name="org.agilereview.demo.findbugs.updatesite"/>
    </feature>
