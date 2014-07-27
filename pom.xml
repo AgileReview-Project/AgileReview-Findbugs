@@ -311,5 +311,16 @@
                         <id>org.agilereview.lib.snapshots</id>
                         <url>http://www.agilereview.org/m2/snapshots/</url>
                 </repository>
+                <repository>
+                        <id>org.agilereview.snapshots</id>
+                        <url>http://www.agilereview.org/p2/1.0/development/updatesite/</url>
+                        <layout>p2</layout>
+                </repository>
+<!-- add this again once first release is done
+                <repository>
+                        <id>org.agilereview.releases</id>
+                        <url>http://www.agilereview.org/p2/1.0/stable/updatesite/</url>
+                        <layout>p2</layout>
+                </repository>-->
         </repositories>
 </project>

@@ -6,7 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.agilereview.demo.findbugs.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.agilereview.core;bundle-version="1.0.0",
+ org.agilereview.core,
  edu.umd.cs.findbugs.plugin.eclipse;bundle-version="2.0.3",
  org.eclipse.jdt.core;bundle-version="3.7.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
