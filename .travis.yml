@@ -1,1 +1,7 @@
 language: java
+install: true
+script: mvn clean install -P uploadSnapshot -s .m2/settings.xml
+env:
+  global:
+  - secure: DmAcsyQxfVK0amTE/DHfih2gTwfGq2U7aFXyNWcIwMHyn5pD19p37NHJz8sJybpDwsXIn228XNoV7o5QJvYIeK3sEuaMX0OC85Ua9g9aguY0kuJ329s+DShZACbcuKAZSq7OH089urmX37IYwX26KVMw3NvbZqs6JbUGZZuX2cM=
+  - secure: J+lllhWO7XwzQl50S6VO8TXcpdRefypQR7d1ct6SYL2XI6faDCJsvPZUiGKxDzRL+OD0EmR31vYYd17/RlVk6TEV5ttmTSmH4W/unjEpaDP9arnXjBUDBneNyiw4QB7e04c2/ETnS/C6hv2lxZgSPHsWLwbg4UGOtnqbCwwqtIA=
