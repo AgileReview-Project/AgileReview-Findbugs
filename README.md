@@ -7,7 +7,7 @@ Findbugs Plugin for AgileReview (Demo/Prototype)
 How to use?
 ===========
 * Install Findbugs Eclipse plugin e.g. via update site: http://findbugs.cs.umd.edu/eclipse/
-* Import project in Eclipse, run as Eclipse Application (sry, no update site atm)
+* Install AgileReview Findbugs Plug-in from http://www.agilereview.org/p2/findbugs/updatesite/
 * Execute Findbugs
   * Right-click on project
   * Choose "Find Bugs-> Find Bugs"
